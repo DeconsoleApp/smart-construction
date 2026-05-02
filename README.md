@@ -14,4 +14,4 @@ Monorepo for Smart Construction platform:
 3. Run each service from its folder.
 
 ## CI
-GitHub workflows are available in `.github/workflows/`.
+GitHub workflows are available in `.github/workflows/`. 
