@@ -124,7 +124,7 @@ async def forgot_password(*, db: DbSession, body: ForgotPasswordRequest) -> Any:
             settings.SECRET_KEY,
             algorithm=ALGORITHM,
         )
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         loop.run_in_executor(None, send_password_reset_email, body.email, reset_token)
     return {"message": "If an account with that email exists, a reset link has been sent."}
 
