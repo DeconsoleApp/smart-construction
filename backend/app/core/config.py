@@ -85,9 +85,13 @@ class Settings(BaseSettings):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         url = self.DATABASE_URL
-        # Convert standard Postgres URL to use async driver
-        if url.startswith("postgresql://"):
-            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        # Force the asyncpg driver regardless of which scheme the env value uses.
+        # asyncpg is the only Postgres driver we install (requirements.txt) so any
+        # other scheme would crash with ModuleNotFoundError at engine startup.
+        for prefix in ("postgresql+psycopg2://", "postgresql+psycopg://", "postgresql://"):
+            if url.startswith(prefix):
+                url = "postgresql+asyncpg://" + url[len(prefix):]
+                break
         # Avoid asyncpg conflicts with strict channel_binding (e.g., Neon)
         if "channel_binding=require" in url:
             url = url.replace("&channel_binding=require", "")
